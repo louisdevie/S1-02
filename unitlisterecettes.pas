@@ -10,6 +10,8 @@ interface
             effet: EnumBonus;
         end;
 
+    const TAILLE_PAGE_RECETTES = 10;
+
 
     procedure initRecettes;
 
@@ -19,46 +21,48 @@ interface
 
     procedure effacerRecettes;
 
-
     procedure premierePageRecettes;
 
     procedure pageSuivanteRecettes;
 
     procedure pagePrecedenteRecettes;
 
-    function pageCourante: Integer;
+    function pageCouranteRecettes: Integer;
 
 
-    function lireRecette(n: Integer): TypeRecette;
+    function lireRecette: TypeRecette;
 
 
 implementation
 
     type
-        PtrCelluleRecette = ^CelluleRecette;
+        _PtrCelluleRecette = ^_CelluleRecette;
 
-        CelluleRecette = record
+        _CelluleRecette = record
             valeur: TypeRecette;
-            precedantOrdreAlpha: PtrCelluleRecette;
-            suivantOrdreAlpha: PtrCelluleRecette;
-            precedantOrdreBonus: PtrCelluleRecette;
-            suivantOrdreBonus: PtrCelluleRecette;
+            precedantOrdreAlpha: _PtrCelluleRecette;
+            suivantOrdreAlpha: _PtrCelluleRecette;
+            precedantOrdreBonus: _PtrCelluleRecette;
+            suivantOrdreBonus: _PtrCelluleRecette;
         end;
 
     var
-        _pointeurPage: PtrCelluleRecette;
-        _pointeurRecette: PtrCelluleRecette;
+        _pointeurPremierePage: _PtrCelluleRecette;
+        _pointeurPage: _PtrCelluleRecette;
+        _pointeurRecette: _PtrCelluleRecette;
         _pageCourante: Integer;
 
     procedure initRecettes;
     begin
-        // À FAIRE
+        _pointeurPremierePage := NIL;  
+        _pointeurPage := NIL;
+        _pointeurRecette := NIL;
     end;
 
 
     procedure insererRecette(recette: TypeRecette);
     begin
-        // À FAIRE
+
     end;
 
 
@@ -66,7 +70,6 @@ implementation
     begin
         // À FAIRE
     end;
-
 
     procedure premierePageRecettes;
     begin
@@ -83,13 +86,13 @@ implementation
         // À FAIRE
     end;
 
-    function pageCourante: Integer;
+    function pageCouranteRecettes: Integer;
     begin
         // À FAIRE
     end;
 
 
-    function lireRecette(n: Integer): TypeRecette;
+    function lireRecette: TypeRecette;
     begin
         // À FAIRE
     end;

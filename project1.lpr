@@ -39,19 +39,36 @@ end;
 var
     FD: Text;
     ligne, nom, effet: string;
+    recette: TypeRecette;
+    i: Integer;
 begin
     AssignFile(FD, 'Recettes.txt');
 
     reset(FD);
 
+    initRecettes;
+
     while not eof(FD) do
     begin
         readln(FD, ligne);
         separer(ligne, nom, effet);
-        writeln(nom, ' - ', bonusFromString(effet));
+        recette.nom := nom;
+        recette.effet := bonusFromString(effet);
+        insererRecette(recette);
     end;
 
     closeFile(FD);
+
+    premierePageRecettes;
+    while pageCouranteRecettes < 123 do pageSuivanteRecettes;
+
+    for i := 1 to TAILLE_PAGE_RECETTES do begin
+        recette := lireRecette;
+        writeln(recette.nom, recette.effet);
+    end;
+
+    effacerRecettes;
+
     readln;
 end.
 
