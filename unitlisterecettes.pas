@@ -40,35 +40,46 @@ implementation
 
         _CelluleRecette = record
             valeur: TypeRecette;
-            precedantOrdreAlpha: _PtrCelluleRecette;
-            suivantOrdreAlpha: _PtrCelluleRecette;
-            precedantOrdreBonus: _PtrCelluleRecette;
+            precedantOrdreAlpha,
+            suivantOrdreAlpha,
+            precedantOrdreBonus,
             suivantOrdreBonus: _PtrCelluleRecette;
         end;
 
     var
-        _pointeurPremierePage: _PtrCelluleRecette;
-        _pointeurPage: _PtrCelluleRecette;
-        _pointeurRecette: _PtrCelluleRecette;
+        _premiereRecetteAlpha,
+        _premiereRecetteBonus,
+        _curseurPage,
+        _curseurRecette: _PtrCelluleRecette;
         _pageCourante: Integer;
 
     procedure initRecettes;
     begin
-        _pointeurPremierePage := NIL;  
-        _pointeurPage := NIL;
-        _pointeurRecette := NIL;
+        _premiereRecetteAlpha := NIL;   
+        _premiereRecetteBonus := NIL;
+        _cusrseurPage := NIL;
+        _curseurRecette := NIL;
     end;
 
 
     procedure insererRecette(recette: TypeRecette);
+    var
+        curseurAlpha, curseurBonus: _PtrCelluleRecette;
     begin
-
+        // À FAIRE
     end;
 
 
     procedure effacerRecettes;
+    var
+        curseur, precedent: _PtrCelluleRecette;
     begin
-        // À FAIRE
+        curseur := _premiereRecetteAlpha;
+        while curseur <> NIL do begin
+            precedent := curseur;
+            cuseur := precedent^.suivantOrdreAlpha;
+            dispose(precedent);
+        end;
     end;
 
     procedure premierePageRecettes;
