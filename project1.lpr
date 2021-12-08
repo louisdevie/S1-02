@@ -2,20 +2,25 @@ program project1;
 
 uses SysUtils;
 
-procedure separer(inp: string; var out1, out2: string);
+// sépare une chaine de caractères au niveau du dernier "/" trouvé
+procedure separer(ligne: string; var avant, apres: string);
 var
-    i: Integer;
+    i: Integer; // indice pour parcourir la ligne
 begin
-    i := 0;
-    out1 := '';
-    out2 := '';
-    while (inp[i] <> '/') and (i <= length(inp)) do begin
-        out1 += inp[i];
-        i += 1;
+    i := length(ligne); // on part de la fin
+    avant := '';
+    apres := '';
+    // `apres` contient tout ce qu'il y a après le dernier "/"
+    while (ligne[i] <> '/') and (i > 0) do begin
+        apres := ligne[i] + apres;
+        i -= 1;
     end;
-    while (i <= length(inp)) do begin
-        out2 += out2;
-        i += 1;
+    // on saute le "/"
+    i -= 1;
+    // `avant` contient ce qu'il reste
+    while (i > 0) do begin
+        avant := ligne[i] + avant;
+        i -= 1;
     end;
 end;
 
@@ -31,7 +36,7 @@ begin
     begin
         readln(FD, ligne);
         separer(ligne, nom, effet);
-        writeln(nom);
+        writeln(nom, ' - ', effet);
     end;
 
     closeFile(FD);
