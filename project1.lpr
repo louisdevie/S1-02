@@ -1,6 +1,18 @@
 program project1;
 
-uses SysUtils;
+uses SysUtils, unitListeRecettes;
+
+function bonusFromString(bonus: string): EnumBonus;
+begin
+    if bonus = '(Regeneration)' then
+        bonusFromString := REGENERATION
+    else if bonus = '(Critique)' then
+        bonusFromString := CRITIQUE
+    else if bonus = '(Force)' then
+        bonusFromString := FORCE
+    else
+        bonusFromString := AUCUN;
+end;
 
 // sépare une chaine de caractères au niveau du dernier "/" trouvé
 procedure separer(ligne: string; var avant, apres: string);
@@ -36,7 +48,7 @@ begin
     begin
         readln(FD, ligne);
         separer(ligne, nom, effet);
-        writeln(nom, ' - ', effet);
+        writeln(nom, ' - ', bonusFromString(effet));
     end;
 
     closeFile(FD);
