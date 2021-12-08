@@ -52,8 +52,15 @@ begin
     couleurTexte(White);
     deplacerCurseurXY(30,9);write('1/ Un ragoût de viande');
     deplacerCurseurXY(70,9);write('(Force)');
-    deplacerCurseurXY(30,10);write('2/ Un sauté de légume'); 
+    deplacerCurseurXY(30,10);write('2/ Un sauté de légume');
     deplacerCurseurXY(70,10);write('(Regénération)');
+    deplacerCurseurXY(30,11);write('3/ Un cassoulet');
+    deplacerCurseurXY(70,11);write('(Critique)');
+    deplacerCurseurXY(30,12);write('4/ Un couscous');
+    deplacerCurseurXY(70,12);write('(Regénération)');
+
+
+
 
     deplacerCurseurZoneAction(1);write('Que souhaitez-vous faire ?');
     deplacerCurseurZoneAction(3);write('     ?/ Commander un plat (entrer son numéro)');
@@ -69,11 +76,52 @@ begin
     else if(TryStrToInt(choix,choixNumber)) then
     begin
          //Si la recette existe, la manger
-         if(choixNumber > 0) and (choixNumber < 3) then manger(choixNumber);
+         if(choixNumber > 0) and (choixNumber < 5) then manger(choixNumber);
     end;
   end;
 
 
+end;
+
+//Fonction exécutée pour afficher l'écran de choix de filtre
+//Renvoie le prochain lieu à visiter
+function choixTri() : typeLieu;
+var choix : string;
+begin
+  choix := '';
+  while (choix <> '0') do
+  begin
+    afficherInterfacePrincipale();
+    afficherLieu('Cantine de la ville de Brightwood');
+
+    deplacerCurseurXY(30,7);write('Alors que vous approchez de la cantine, l''air s''emplit d''un épais fumet. Viandes, poissons,');
+    deplacerCurseurXY(30,8);write('fruits et légumes dont certains vous sont inconnus sont exposés sur les nombreuses tables');
+    deplacerCurseurXY(30,9);write('qui entourent une cuisine de fortune où des palicos s''affairent à préparer des mets aussi');
+    deplacerCurseurXY(30,10);write('généreux qu''appétissants.');
+
+    deplacerCurseurXY(30,12);write('Vous apercevez de nombreux chasseurs assis aux différentes tables de la cantine. Les rires');
+    deplacerCurseurXY(30,13);write('et les chants résonnent créant en ce lieu, une ambiance chaleureuse et rassurante.');
+
+    deplacerCurseurXY(30,15);write('Alors que vous vous asseyez à une table, un palico vous rejoint posant devant vous une cho');
+    deplacerCurseurXY(30,16);write('pe et attendant votre commande.');
+
+    couleurTexte(White);
+    deplacerCurseurZoneAction(1);write('Trier les plats par :');
+    deplacerCurseurZoneAction(3);write('     1/ Ordre alphabétique');
+    deplacerCurseurZoneAction(4);write('     2/ Ordre par effet');
+
+    deplacerCurseurZoneAction(6);write('     0/ Retourner sur la place principale');
+
+    deplacerCurseurZoneResponse();
+    readln(choix);
+
+    case choix of
+       '0' : cantineHUB := ville;
+       '1' : triAlphaRecettes; cantineHUB := choixRecette();
+       '2' : triBonusRecettes; cantineHUB := choixRecette();
+    end;
+
+  end;
 end;
 
 //Fonction exécutée à l'arrivée dans la cantine
@@ -110,7 +158,7 @@ begin
 
   case choix of
        '0' : cantineHUB := ville;
-       '1' : cantineHUB := choixRecette();
+       '1' : cantineHUB := choixTri();//choixRecette();
   end;
 
 end;
