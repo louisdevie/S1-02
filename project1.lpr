@@ -59,6 +59,7 @@ begin
 
     closeFile(FD);
 
+    triAlphaRecettes;
     premierePageRecettes;
     while pageCouranteRecettes < 123 do pageSuivanteRecettes;
 
