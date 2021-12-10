@@ -42,7 +42,7 @@ var
     recette: TypeRecette;
     i: Integer;
 begin
-    AssignFile(FD, 'Recettes.txt');
+    AssignFile(FD, 'dixrecettes.txt');
 
     reset(FD);
 
@@ -59,7 +59,9 @@ begin
 
     closeFile(FD);
 
-    triAlphaRecettes;
+    afficherRecettes;
+
+   { triAlphaRecettes;
     premierePageRecettes;
     while pageCouranteRecettes < 123 do pageSuivanteRecettes;
 
@@ -67,6 +69,8 @@ begin
         recette := lireRecette;
         writeln(recette.nom, recette.effet);
     end;
+   }
+
 
     effacerRecettes;
 
