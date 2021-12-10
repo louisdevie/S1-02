@@ -42,7 +42,7 @@ var
     recette: TypeRecette;
     i: Integer;
 begin
-    AssignFile(FD, 'dixrecettes.txt');
+    AssignFile(FD, 'Recettes.txt');
 
     reset(FD);
 

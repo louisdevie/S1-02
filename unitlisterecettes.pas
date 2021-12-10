@@ -3,7 +3,7 @@ unit unitListeRecettes;
 interface
 
     type
-        EnumBonus = (AUCUN, REGENERATION, CRITIQUE, FORCE);
+        EnumBonus = (AUCUN, FORCE, REGENERATION, CRITIQUE);
 
         TypeRecette = record
             nom: String;
@@ -110,6 +110,14 @@ implementation
         elementApres^.precedantOrdreAlpha := nouvelElement;
     end;
 
+    procedure _insererEntreBonus(nouvelElement, elementAvant, elementApres: _PtrCelluleRecette);
+    begin
+        nouvelElement^.precedantOrdreBonus := elementAvant;
+        nouvelElement^.suivantOrdreBonus := elementApres;
+        elementAvant^.suivantOrdreBonus := nouvelElement;
+        elementApres^.precedantOrdreBonus := nouvelElement;
+    end;
+
     procedure insererRecette(recette: TypeRecette);
     var
         curseurAlpha, curseurBonus, nouvelleRecette: _PtrCelluleRecette;
@@ -128,7 +136,7 @@ implementation
             new(nouvelleRecette);
             nouvelleRecette^.valeur := recette;
 
-            if _estApresOrdreAlpha(_premiereRecetteAlpha^.valeur.nom, recette.nom) then begin
+            if not _estApresOrdreAlpha(recette.nom, _premiereRecetteAlpha^.valeur.nom) then begin
                 _insererEntreAlpha(nouvelleRecette, _premiereRecetteAlpha^.precedantOrdreAlpha, _premiereRecetteAlpha);
                 _premiereRecetteAlpha := nouvelleRecette;
 
@@ -142,8 +150,21 @@ implementation
                     end;
                 end;
             end;
+               
+            if not _estApresOrdreBonus(recette.effet, _premiereRecetteBonus^.valeur.effet) then begin
+                _insererEntreBonus(nouvelleRecette, _premiereRecetteBonus^.precedantOrdreBonus, _premiereRecetteBonus);
+                _premiereRecetteBonus := nouvelleRecette;
 
-            // À FAIRE
+            end else begin
+                curseurBonus := _premiereRecetteBonus;
+                while curseurBonus <> NIL do begin
+                    curseurBonus := curseurBonus^.precedantOrdreBonus;
+                    if _estApresOrdreBonus(recette.effet, curseurBonus^.valeur.effet) then begin
+                        _insererEntreBonus(nouvelleRecette, curseurBonus, curseurBonus^.suivantOrdreBonus);
+                        curseurBonus := NIL;
+                    end;
+                end;
+            end;
         end;
     end;
 
@@ -236,6 +257,14 @@ implementation
         while c <> _premiereRecetteAlpha do begin
             writeln(c^.valeur.nom);
             c := c^.suivantOrdreAlpha;
+        end;
+
+        writeln('========== PAR BONUS ==========');
+        writeln(_premiereRecetteBonus^.valeur.nom, ', ', _premiereRecetteBonus^.valeur.effet);
+        c := _premiereRecetteBonus^.suivantOrdreBonus;
+        while c <> _premiereRecetteBonus do begin
+            writeln(c^.valeur.nom, ', ', c^.valeur.effet);
+            c := c^.suivantOrdreBonus;
         end;
     end;
 
