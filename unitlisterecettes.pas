@@ -10,10 +10,12 @@ interface
             effet: EnumBonus;
         end;
 
-    const TAILLE_PAGE_RECETTES = 10;
+    const TAILLE_PAGE_RECETTES = 13;
 
 
     procedure initRecettes;
+
+    procedure recettesChargees;
 
 
     procedure insererRecette(recette: TypeRecette);
@@ -34,11 +36,10 @@ interface
 
     function pageCouranteRecettes: Integer;
 
+    function taillePageRecettes: Integer;
 
-    function lireRecette: TypeRecette;
 
-
-    procedure afficherRecettes;
+    function lireRecette(numero: Integer): TypeRecette;
 
 
 implementation
@@ -63,6 +64,9 @@ implementation
         _curseurRecette: _PtrCelluleRecette;
         _pageCourante: Integer;
         _modeTriUtilise: _ModeTri;
+        _dernierePage : Integer;   
+        _tailleDernierePage : Integer;
+        _nombreDeRecettes : Integer;
 
     procedure initRecettes;
     begin
@@ -70,8 +74,19 @@ implementation
         _premiereRecetteBonus := NIL;
         _curseurPage := NIL;
         _curseurRecette := NIL;
+        _nombreDeRecettes := 0;
+        _dernierePage := 0;
+        _tailleDernierePage := 0;
     end;
 
+
+    function taillePageRecettes: Integer;
+    begin
+        if _pageCourante = _dernierePage then
+            taillePageRecettes := _tailleDernierePage
+        else
+            taillePageRecettes := TAILLE_PAGE_RECETTES;
+    end;
 
     // str1 > str2
     function _estApresOrdreAlpha(str1, str2: String): boolean;
@@ -122,6 +137,8 @@ implementation
     var
         curseurAlpha, curseurBonus, nouvelleRecette: _PtrCelluleRecette;
     begin
+        _nombreDeRecettes += 1;
+
         if _premiereRecetteAlpha = NIL then begin
             new(_premiereRecetteAlpha);
             _premiereRecetteBonus := _premiereRecetteAlpha;
@@ -169,6 +186,16 @@ implementation
     end;
 
 
+    procedure recettesChargees;
+    begin
+        _dernierePage := _nombreDeRecettes div TAILLE_PAGE_RECETTES;
+        _tailleDernierePage := _nombreDeRecettes mod TAILLE_PAGE_RECETTES;
+        if _tailleDernierePage = 0 then
+            _tailleDernierePage := TAILLE_PAGE_RECETTES
+        else
+            _dernierePage += 1;
+    end;
+
     procedure effacerRecettes;
     var
         curseur, precedent: _PtrCelluleRecette;
@@ -176,7 +203,7 @@ implementation
         // si la liste est déja vide, ne rien faire
         if _premiereRecetteAlpha <> NIL then begin
             // on parcours la liste en utilisant l'ordre alphabétique
-            // casser la "boucle" en détachant le premier élément du dernier
+            // "casser la boucle" en détachant le premier élément du dernier
             (_premiereRecetteAlpha^.precedantOrdreAlpha)^.suivantOrdreAlpha := NIL;
 
             curseur := _premiereRecetteAlpha;
@@ -187,8 +214,7 @@ implementation
                 dispose(precedent);
             end;
 
-            _premiereRecetteAlpha := NIL;
-            _premiereRecetteBonus := NIL;
+            initRecettes;
         end;
     end;
 
@@ -206,31 +232,61 @@ implementation
     procedure premierePageRecettes;
     begin
         case _modeTriUtilise of
-             ALPHABETIQUE: _curseurPage := _premiereRecetteAlpha;
-             PARBONUS:     _curseurPage := _premiereRecetteBonus;
+             ALPHABETIQUE: begin
+                 _curseurPage := _premiereRecetteAlpha;
+                 _pageCourante := 1;
+             end;
+             PARBONUS: begin
+                 _curseurPage := _premiereRecetteBonus;
+                 _pageCourante := 1;
+             end;
         end;
     end;
 
     procedure pageSuivanteRecettes;
+    var
+        i: Integer;
     begin
         case _modeTriUtilise of
              ALPHABETIQUE: begin
-                 { À FAIRE }
+                 for i := 1 to taillePageRecettes do
+                     _curseurPage := _curseurPage^.suivantOrdreAlpha;
+                 if _pageCourante = _dernierePage then
+                     _pageCourante := 1
+                 else
+                     _pageCourante += 1;
              end;
              PARBONUS: begin
-                 { À FAIRE }
+                 for i := 1 to taillePageRecettes do
+                     _curseurPage := _curseurPage^.suivantOrdreBonus;
+                 if _pageCourante = _dernierePage then
+                     _pageCourante := 1
+                 else
+                     _pageCourante += 1;
              end;
         end;
     end;
 
     procedure pagePrecedenteRecettes;
+    var
+        i: Integer;
     begin
         case _modeTriUtilise of
              ALPHABETIQUE: begin
-                 { À FAIRE }
+                 for i := 0 to taillePageRecettes do
+                     _curseurPage := _curseurPage^.precedantOrdreAlpha;
+                 if _pageCourante = 1 then
+                     _pageCourante := _dernierePage
+                 else
+                     _pageCourante -= 1;
              end;
              PARBONUS: begin
-                 { À FAIRE }
+                 for i := 0 to taillePageRecettes do
+                     _curseurPage := _curseurPage^.precedantOrdreBonus;
+                 if _pageCourante = 1 then
+                     _pageCourante := _dernierePage
+                 else
+                     _pageCourante -= 1;
              end;
         end;
     end;
@@ -241,30 +297,22 @@ implementation
     end;
 
 
-    function lireRecette: TypeRecette;
-    begin
-        // À FAIRE
-    end;
-
-
-    procedure afficherRecettes;
+    function lireRecette(numero: Integer): TypeRecette;
     var
-        c: _PtrCelluleRecette;
+        i: Integer;
     begin
-        writeln('=== ORDRE ALPHAB'#144'TIQUE ===');
-        writeln(_premiereRecetteAlpha^.valeur.nom);
-        c := _premiereRecetteAlpha^.suivantOrdreAlpha;
-        while c <> _premiereRecetteAlpha do begin
-            writeln(c^.valeur.nom);
-            c := c^.suivantOrdreAlpha;
-        end;
-
-        writeln('========== PAR BONUS ==========');
-        writeln(_premiereRecetteBonus^.valeur.nom, ', ', _premiereRecetteBonus^.valeur.effet);
-        c := _premiereRecetteBonus^.suivantOrdreBonus;
-        while c <> _premiereRecetteBonus do begin
-            writeln(c^.valeur.nom, ', ', c^.valeur.effet);
-            c := c^.suivantOrdreBonus;
+        _curseurRecette := _curseurPage;
+        case _modeTriUtilise of
+             ALPHABETIQUE: begin
+                 for i := 1 to numero do
+                     _curseurRecette := _curseurRecette^.suivantOrdreAlpha;
+                 lireRecette := _curseurRecette^.valeur;
+             end;
+             PARBONUS: begin
+                 for i := 1 to numero do
+                     _curseurRecette := _curseurRecette^.suivantOrdreBonus;
+                 lireRecette := _curseurRecette^.valeur;
+             end;
         end;
     end;
 

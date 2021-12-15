@@ -58,19 +58,18 @@ begin
     end;
 
     closeFile(FD);
+    recettesChargees;
 
-    afficherRecettes;
-
-   { triAlphaRecettes;
+    triAlphaRecettes;
     premierePageRecettes;
-    while pageCouranteRecettes < 123 do pageSuivanteRecettes;
 
-    for i := 1 to TAILLE_PAGE_RECETTES do begin
-        recette := lireRecette;
-        writeln(recette.nom, recette.effet);
+    pagePrecedenteRecettes;   
+    pagePrecedenteRecettes;
+
+    for i := 1 to taillePageRecettes do begin
+        recette := lireRecette(i);
+        writeln(recette.nom, ' : ', recette.effet);
     end;
-   }
-
 
     effacerRecettes;
 
