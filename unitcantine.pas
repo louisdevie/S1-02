@@ -23,8 +23,13 @@ function cantineHUB() : typeLieu;
 
 
 implementation
+
 uses
-  sysutils,unitPersonnage,unitIHM,GestionEcran;
+    sysutils,
+    unitPersonnage,
+    unitIHM,
+    GestionEcran,
+    ;
 
 //Mange le plat et applique le bonus
 procedure manger(nbPlat : integer);
@@ -116,7 +121,7 @@ begin
     readln(choix);
 
     case choix of
-       '0' : cantineHUB := ville;
+       '0' : choixTri := ville;
        '1' : triAlphaRecettes; cantineHUB := choixRecette();
        '2' : triBonusRecettes; cantineHUB := choixRecette();
     end;
