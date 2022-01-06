@@ -1,13 +1,12 @@
 unit unitListeRecettes;
 
 interface
+    uses unitPersonnage;
 
     type
-        EnumBonus = (AUCUN, FORCE, REGENERATION, CRITIQUE);
-
         TypeRecette = record
             nom: String;
-            effet: EnumBonus;
+            effet: Bonus;
         end;
 
     const TAILLE_PAGE_RECETTES = 13;
@@ -112,7 +111,7 @@ implementation
     end;
 
     // eff1 > eff2
-    function _estApresOrdreBonus(eff1, eff2: EnumBonus): boolean;
+    function _estApresOrdreBonus(eff1, eff2: Bonus): boolean;
     begin
         _estApresOrdreBonus := ord(eff1) > ord(eff2);
     end;
@@ -306,14 +305,13 @@ implementation
              ALPHABETIQUE: begin
                  for i := 1 to numero do
                      _curseurRecette := _curseurRecette^.suivantOrdreAlpha;
-                 lireRecette := _curseurRecette^.valeur;
              end;
              PARBONUS: begin
                  for i := 1 to numero do
                      _curseurRecette := _curseurRecette^.suivantOrdreBonus;
-                 lireRecette := _curseurRecette^.valeur;
              end;
         end;
+        lireRecette := _curseurRecette^.valeur;
     end;
 
 end.

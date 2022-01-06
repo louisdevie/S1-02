@@ -6,9 +6,11 @@ interface
 
 implementation
 
-    uses unitListeRecettes;
+    uses
+      unitListeRecettes,
+      unitPersonnage; // pour les types de bonus
 
-    function bonusFromString(bonus: string): EnumBonus;
+    function bonusFromString(bonus: string): Bonus;
     begin
         if bonus = '(Regeneration)' then
             bonusFromString := REGENERATION
@@ -17,7 +19,7 @@ implementation
         else if bonus = '(Force)' then
             bonusFromString := FORCE
         else
-            bonusFromString := AUCUN;
+            bonusFromString := AUCUNB;
     end;
 
     // sépare une chaine de caractères au niveau du dernier "/" trouvé

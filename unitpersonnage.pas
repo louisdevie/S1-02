@@ -8,7 +8,7 @@ uses
     unitObjet,unitEquipement;
 //----- TYPES -----
 type
-  bonus = (AucunB,Force,Regeneration);       //Bonus de la cantinue
+  bonus = (AucunB,Force,Regeneration, CRITIQUE);       //Bonus de la cantinue
   genre = (Masculin,Feminin,Autre);         //Genre du personnage
 
   //Type représentant le personnage
@@ -348,6 +348,7 @@ begin
        AucunB:bonusToString:='Aucun';
        Force:bonusToString:='Force';
        Regeneration:bonusToString:='Regénération';
+       CRITIQUE:bonusToString:='Critique';
   end;
 end;
 

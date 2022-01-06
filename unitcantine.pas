@@ -44,6 +44,7 @@ end;
 function choixRecette() : typeLieu;
 var choix : string;
   choixNumber : integer;
+  recette: TypeRecette;
 begin
   choix := '';
   while (choix <> '0') do
@@ -53,14 +54,14 @@ begin
                                                         
     deplacerCurseurXY(63,5); write('Le cuisinier vous propose :');
     couleurTexte(Cyan);
-    deplacerCurseurXY(30,7); write('Plat');
-    deplacerCurseurXY(70,7); write('Bonus');
+    deplacerCurseurXY(25,7); write('Plat');
+    deplacerCurseurXY(85,7); write('Bonus');
     couleurTexte(White);
-    deplacerCurseurXY(30,9); write('1/ Un ragoût de viande');
-    deplacerCurseurXY(70,9); write('(Force)');
 
+    recette := lireRecette(0);
 
-
+    deplacerCurseurXY(25,9); write('1/ ', recette.nom);
+    deplacerCurseurXY(85,9); write(bonusToString(recette.effet));
 
     deplacerCurseurZoneAction(1);write('Que souhaitez-vous faire ?');
     deplacerCurseurZoneAction(3);write('     ?/ Commander un plat (entrer son numéro)');
