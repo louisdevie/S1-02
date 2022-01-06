@@ -91,8 +91,6 @@ end;
 //Affiche le logo du jeu
 procedure afficherLogo();
 begin
-  //On redimensionne la console
-  changerTailleConsole(200,40);
   effacerEcran();
   writeln;  
   writeln;
