@@ -55,7 +55,7 @@ function chambrePremiereFois() : typeLieu;
 var choix : string;
 begin
   choix := '';
-  while (choix <> '1') and (choix <> '2') and (choix <> '3') and (choix <> '4') do                                              {3.5}
+  while (choix <> '1') and (choix <> '2') and (choix <> '3') and (choix <> '4') do
   begin
     afficherInterfacePrincipale();
     afficherLieu('Dans les vapes');
@@ -81,7 +81,7 @@ begin
     deplacerCurseurZoneAction(3);write('     1/ Vous reposer dans votre lit');
     deplacerCurseurZoneAction(4);write('     2/ Regarder dans votre coffre');
     deplacerCurseurZoneAction(5);write('     3/ Sortir de votre chambre');
-    deplacerCurseurZoneAction(6);write('     4/ Prendre un bon repas dans la cantine');                                            {3.5}
+    deplacerCurseurZoneAction(6);write('     4/ Aller à la cantine');
 
     deplacerCurseurZoneResponse();
     readln(choix);
@@ -91,7 +91,7 @@ begin
        '1' : chambrePremiereFois := repos();
        '2' : chambrePremiereFois := coffreEquipement();
        '3' : chambrePremiereFois := ville;
-       '4' : chambrePremiereFois := cantine;                                                                                       {3.5}
+       '4' : chambrePremiereFois := cantine;
   end;
 
 end;
@@ -102,7 +102,7 @@ function chambreHub() : typeLieu;
 var choix : string;
 begin
   choix := '';
-  while (choix <> '1') and (choix <> '2') and (choix <> '3') and (choix <> '4') do                                                  {3.5}
+  while (choix <> '1') and (choix <> '2') and (choix <> '3') and (choix <> '4') do
   begin
     afficherInterfacePrincipale();
     afficherLieu('Dans votre chambre');
@@ -124,7 +124,7 @@ begin
     deplacerCurseurZoneAction(3);write('     1/ Vous reposer dans votre lit');
     deplacerCurseurZoneAction(4);write('     2/ Regarder dans votre coffre');
     deplacerCurseurZoneAction(5);write('     3/ Sortir de votre chambre');
-    deplacerCurseurZoneAction(6);write('     4/ Prendre un bon repas dans la cantine');                                             {3.5}
+    deplacerCurseurZoneAction(6);write('     4/ Aller à la cantine');
 
     deplacerCurseurZoneResponse();
     readln(choix);
@@ -134,7 +134,7 @@ begin
        '1' : chambreHub := repos();
        '2' : chambreHub := coffreEquipement(); 
        '3' : chambreHub := ville;
-       '4' : chambreHub := cantine;                                                                                                 {3.5}
+       '4' : chambreHub := cantine;
   end;
 
 end;
