@@ -30,6 +30,7 @@ procedure deplacerCurseurZoneResponse();
 
 
 implementation
+
 uses
     unitMonstre,unitObjet,unitPersonnage,unitEquipement,GestionEcran,sysutils;
 
@@ -81,6 +82,7 @@ end;
 procedure afficherMenuLateralPersonnage();
 var
   i:integer;
+  perso:Personnage;
 begin
   dessinerCadreXY(157,0,198,39,simple,white,black);
   dessinerCadreXY(160,0,195,2,simple,white,black);
@@ -123,7 +125,7 @@ begin
     deplacerCurseurXY(159,35); write('Competence2 : ',getPersonnage().competence.competence2.nomCompetence);
     deplacerCurseurXY(159,36); write('Attaque base: ',getPersonnage().attaqueBase);
     deplacerCurseurXY(159,37); write('Armure base : ',getPersonnage().armureBase);
-
+    niveauSuivant();
 
   end;
 
