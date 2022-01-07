@@ -1,48 +1,67 @@
+{
+Unité de gestion des recettes
+Les recettes sont placées dans une liste doublement chaînée circulaire,
+   directement dans l'ordre.
+}
 unit unitListeRecettes;
 
 interface
-    uses unitPersonnage;
+    uses unitPersonnage; // pour les types debonus
 
     type
-        TypeRecette = record
+        TypeRecette = record // représente une recette
             nom: String;
             effet: Bonus;
         end;
 
 
-    const TAILLE_PAGE_RECETTES = 13;
-
+    // le plus long nom de recette
     function longueurMaxNomRecette: Integer;
 
+    // le nombre total de pages des recettes
     function nombrePagesRecettes: Integer;
 
 
+    // initialiser l'unité
     procedure initRecettes;
 
+    // opérations à la fin du chargement
     procedure recettesChargees;
 
 
+    // insère une recette dans la liste
     procedure insererRecette(recette: TypeRecette);
 
 
+    // libère toutes les recettes de la mémoire
     procedure effacerRecettes;
 
 
+    // parcours les recettes dans l'ordre alphabétique
     procedure triAlphaRecettes;
 
+    // parcours les recettes par bonus
     procedure triBonusRecettes;
 
+    // revient à la première page
     procedure premierePageRecettes;
 
+    // passe à la page suivante
     procedure pageSuivanteRecettes;
 
+    // passe à la page précédente
     procedure pagePrecedenteRecettes;
 
+    // le numéro de la page actuelle
     function pageCouranteRecettes: Integer;
 
+    // le nombre de recettes sur la page actuelle
+    // (la dernière page peut contenir moins d'éléments si le nombre de recettes
+    //    n'est pas un multiple de la taille d'une page)
     function taillePageRecettes: Integer;
 
-
+    // renvoie une recette de la page actuelle (<numero> doit être entre 0
+    //    inclus et <taillePageRecettes> exclu)
     function lireRecette(numero: Integer): TypeRecette;
 
 
@@ -61,18 +80,21 @@ implementation
 
         _ModeTri = (ALPHABETIQUE, PARBONUS);
 
-    var
-        _premiereRecetteAlpha,
-        _premiereRecetteBonus,
-        _curseurPage,
-        _curseurRecette: _PtrCelluleRecette;
-        _modeTriUtilise: _ModeTri;
-        _pageCourante,
-        _dernierePage,
-        _tailleDernierePage,
-        _nombreDeRecettes,
-        _longueurMax : Integer;
+    // nombre de recettes par page
+    const TAILLE_PAGE_RECETTES = 13;
 
+    var
+        _premiereRecetteAlpha, // ancres vers la première page
+        _premiereRecetteBonus,
+        _curseurPage: _PtrCelluleRecette; // pointe vers la première recette de la page en cours
+        _modeTriUtilise: _ModeTri;
+        _pageCourante, // numéro de la page courante
+        _dernierePage, // numéro de la dernière page
+        _tailleDernierePage, // taille de la dernière page
+        _nombreDeRecettes, // nombre total de recettes
+        _longueurMax : Integer; // longueur du nom de recette le plus long
+
+    // initialisations des variables
     procedure initRecettes;
     begin
         _premiereRecetteAlpha := NIL;   
@@ -94,21 +116,24 @@ implementation
             taillePageRecettes := TAILLE_PAGE_RECETTES;
     end;
 
-    // str1 > str2
+    // renvoie VRAI si <str1> est après <str2> dans l'ordre alphabétique, FAUX sinon
     function _estApresOrdreAlpha(str1, str2: String): boolean;
     var
         i, tailleMin: Integer;
     begin
         i := 1;
+        // s'arrêter à la taille de la plus petite des deux chaînes
         if length(str1) > length(str2) then
             tailleMin := length(str2)
         else
             tailleMin := length(str1);
 
         while true do
+            // si <str1> est plus grand, il est considéré après
             if i > tailleMin then begin
                 _estApresOrdreAlpha := length(str1) > length(str2);
                 break;
+            // avancer jusqu'à trouver un caractère différent
             end else if str1[i] = str2[i] then
                 i += 1
             else begin
@@ -117,12 +142,13 @@ implementation
             end;
     end;
 
-    // eff1 > eff2
+    // renvoie VRAI si le bonus <eff1> vient après <eff2>, FAUX sinon
     function _estApresOrdreBonus(eff1, eff2: Bonus): boolean;
     begin
         _estApresOrdreBonus := ord(eff1) > ord(eff2);
     end;
 
+    // insère <nouvelElement> dans la liste entre <elementAvant> et <elementApres>
     procedure _insererEntreAlpha(nouvelElement, elementAvant, elementApres: _PtrCelluleRecette);
     begin                                                   
         nouvelElement^.precedantOrdreAlpha := elementAvant;
@@ -131,6 +157,7 @@ implementation
         elementApres^.precedantOrdreAlpha := nouvelElement;
     end;
 
+    // idem
     procedure _insererEntreBonus(nouvelElement, elementAvant, elementApres: _PtrCelluleRecette);
     begin
         nouvelElement^.precedantOrdreBonus := elementAvant;
@@ -147,10 +174,12 @@ implementation
 
         if length(recette.nom) > _longueurMax then _longueurMax := length(recette.nom);
 
+        // cas particulier : la liste est vide
         if _premiereRecetteAlpha = NIL then begin
             new(_premiereRecetteAlpha);
             _premiereRecetteBonus := _premiereRecetteAlpha;
 
+            // la recette est la première et est sa propre suivante et précédente
             _premiereRecetteAlpha^.valeur := recette;
             _premiereRecetteAlpha^.precedantOrdreAlpha := _premiereRecetteAlpha;
             _premiereRecetteAlpha^.suivantOrdreAlpha := _premiereRecetteAlpha;
@@ -158,9 +187,11 @@ implementation
             _premiereRecetteAlpha^.suivantOrdreBonus := _premiereRecetteBonus;
 
         end else begin
+            // créer la cellule de la recette
             new(nouvelleRecette);
             nouvelleRecette^.valeur := recette;
 
+            // insérer au début
             if not _estApresOrdreAlpha(recette.nom, _premiereRecetteAlpha^.valeur.nom) then begin
                 _insererEntreAlpha(nouvelleRecette, _premiereRecetteAlpha^.precedantOrdreAlpha, _premiereRecetteAlpha);
                 _premiereRecetteAlpha := nouvelleRecette;
@@ -175,7 +206,8 @@ implementation
                     end;
                 end;
             end;
-               
+
+            // insérer au début
             if not _estApresOrdreBonus(recette.effet, _premiereRecetteBonus^.valeur.effet) then begin
                 _insererEntreBonus(nouvelleRecette, _premiereRecetteBonus^.precedantOrdreBonus, _premiereRecetteBonus);
                 _premiereRecetteBonus := nouvelleRecette;
@@ -194,6 +226,7 @@ implementation
     end;
 
 
+    // calcule la taille de la dernière page
     procedure recettesChargees;
     begin
         _dernierePage := _nombreDeRecettes div TAILLE_PAGE_RECETTES;
@@ -308,19 +341,20 @@ implementation
     function lireRecette(numero: Integer): TypeRecette;
     var
         i: Integer;
+        curseurRecette: _PtrCelluleRecette;
     begin
-        _curseurRecette := _curseurPage;
+        curseurRecette := _curseurPage;
         case _modeTriUtilise of
              ALPHABETIQUE: begin
                  for i := 1 to numero do
-                     _curseurRecette := _curseurRecette^.suivantOrdreAlpha;
+                     curseurRecette := curseurRecette^.suivantOrdreAlpha;
              end;
              PARBONUS: begin
                  for i := 1 to numero do
-                     _curseurRecette := _curseurRecette^.suivantOrdreBonus;
+                     curseurRecette := curseurRecette^.suivantOrdreBonus;
              end;
         end;
-        lireRecette := _curseurRecette^.valeur;
+        lireRecette := curseurRecette^.valeur;
     end;
 
 

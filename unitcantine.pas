@@ -55,7 +55,7 @@ begin
     deplacerCurseurXY(63,5); write('Le cuisinier vous propose :');
     couleurTexte(Cyan);
     deplacerCurseurXY(29,7); write('Plat');
-    bonusX := 27 + longueurMaxNomRecette;
+    bonusX := 31 + longueurMaxNomRecette;
     deplacerCurseurXY(bonusX,7); write('Bonus');
     couleurTexte(White);
 

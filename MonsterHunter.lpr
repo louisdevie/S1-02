@@ -15,7 +15,9 @@ uses
     unitCantine,
     unitForge,
     unitChargementRecettes,
-    GestionEcran, unitjournalisation;
+    unitListeRecettes,
+    GestionEcran,
+    unitJournalisation;
 
 var lieuEnCours : typeLieu;  //Lieu où se trouve le "joueur"
 
@@ -35,5 +37,6 @@ begin
     //On se rend au lieu en cours (dans lequel l'utilisateur spécifira un nouveau lieu en cours)
     LieuEnCours := seRendre(LieuEnCours);
   end;
+  effacerRecettes;
 end.
 

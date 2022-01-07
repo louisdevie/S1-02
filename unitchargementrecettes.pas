@@ -1,7 +1,11 @@
+{
+Unité qui assure la lecture du fichier de recettes
+}
 unit unitChargementRecettes;
 
 interface
 
+    // appeler une fois au début du jeu
     procedure chargerLesRecettes;
 
 implementation
@@ -10,6 +14,8 @@ implementation
       unitListeRecettes,
       unitPersonnage; // pour les types de bonus
 
+    // convertit le *nom* d'un bonus en bonus
+    // renvoie AUCUNB si le bonus n'est pas reconnu
     function bonusFromString(bonus: string): Bonus;
     begin
         if bonus = '(Regeneration)' then
@@ -52,21 +58,21 @@ implementation
     begin
         AssignFile(fichier, 'Recettes.txt');
 
-        reset(fichier);
+        reset(fichier); // ouverture en lecture
 
-        initRecettes;
+        initRecettes; // préparer la liste de recettes
 
         while not eof(fichier) do
         begin
-            readln(fichier, ligne);
-            separer(ligne, nom, effet);
+            readln(fichier, ligne); // pour chaque ligne
+            separer(ligne, nom, effet); // séparer la ligne en deux
             recette.nom := nom;
             recette.effet := bonusFromString(effet);
             insererRecette(recette);
         end;
 
         closeFile(fichier);
-        recettesChargees;
+        recettesChargees; // opérations finales
     end;
 end.
 
