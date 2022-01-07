@@ -3,6 +3,7 @@ unit unitIHM;
 {$codepage utf8}
 {$mode objfpc}{$H+}
 
+
 interface  
 //Affiche l'interface principale (les cadres principaux)
 procedure afficherInterfacePrincipale();  
@@ -18,10 +19,6 @@ procedure afficherLieuSimple(nomLieu : string);
 procedure deplacerCurseurZoneAction(numLigne : integer); 
 //Positionne le curseur à la n-ième ligne de la zone d'action
 procedure deplacerCurseurZoneResponse();
-//Afficher un cadre spécial pour les équipement en obsidienne                   {5.14}
-procedure afficherCadreActionForge();
-//Affiche l'interface de la forge                                               {5.15}
-procedure afficherInterfaceForge();
 
 
 
@@ -34,7 +31,7 @@ procedure afficherInterfaceForge();
 
 implementation
 uses
-    unitMonstre,unitObjet,unitPersonnage,unitEquipement,GestionEcran;
+    unitMonstre,unitObjet,unitPersonnage,unitEquipement,GestionEcran,sysutils;
 
 //Positionne le curseur dans la zone de réponse
 procedure deplacerCurseurZoneResponse();
@@ -85,42 +82,48 @@ procedure afficherMenuLateralPersonnage();
 var
   i:integer;
 begin
-  dessinerCadreXY(147,0,198,39,simple,white,black);
-  dessinerCadreXY(156,0,190,2,simple,white,black);
-  dessinerCadreXY(158,1,188,3,simple,white,black);
-  deplacerCurseurXY(164,2);Write('FICHE DU PERSONNAGE');
+  dessinerCadreXY(157,0,198,39,simple,white,black);
+  dessinerCadreXY(160,0,195,2,simple,white,black);
+  dessinerCadreXY(162,1,193,3,simple,white,black);
+  deplacerCurseurXY(168,2);Write('FICHE DU PERSONNAGE');
 
   if(getPersonnage().Nom <> '') then
   begin
-    deplacerCurseurXY(164,5);Write('   -------------   ');
+    deplacerCurseurXY(159,5); write('       Nom : ',getPersonnage().nom);
+    deplacerCurseurXY(159,6); write('     Genre : ',genreToString(getPersonnage().sexe));
+    deplacerCurseurXY(159,7); write('    Taille : ',getPersonnage().taille);
 
-    deplacerCurseurXY(155,7); write('       Nom : ',getPersonnage().nom);
-    deplacerCurseurXY(155,8); write('     Genre : ',genreToString(getPersonnage().sexe));
-    deplacerCurseurXY(155,9); write('    Taille : ',getPersonnage().taille);
-
-    deplacerCurseurXY(164,11);Write('   -------------   ');
-
-    deplacerCurseurXY(155,13); write('     Santé : ',getPersonnage().sante);
-    deplacerCurseurXY(155,14); write('    Argent : ',getPersonnage().argent);
+    deplacerCurseurXY(159,9); write('     Santé : ',getPersonnage().sante);
+    deplacerCurseurXY(159,10); write('    Argent : ',getPersonnage().argent);
 
 
-    deplacerCurseurXY(164,16);Write('   -------------   ');
+    deplacerCurseurXY(169,12);Write('   -------------   ');
 
-    deplacerCurseurXY(155,18); write('      Arme : ',armeToString(getPersonnage().arme));
-    deplacerCurseurXY(155,19); write('    Casque : ',armureToString(Casque,getPersonnage().armures[0]));
-    deplacerCurseurXY(155,20); write('     Torse : ',armureToString(Torse,getPersonnage().armures[1]));
-    deplacerCurseurXY(155,21); write('     Gants : ',armureToString(Gants,getPersonnage().armures[2]));
-    deplacerCurseurXY(155,22); write(' Jambières : ',armureToString(Jambieres,getPersonnage().armures[3]));
-    deplacerCurseurXY(155,23); write('    Bottes : ',armureToString(Bottes,getPersonnage().armures[4]));
+    deplacerCurseurXY(159,14); write('      Arme : ',armeToString(getPersonnage().arme));
+    deplacerCurseurXY(159,15); write('    Casque : ',armureToString(Casque,getPersonnage().armures[0]));
+    deplacerCurseurXY(159,16); write('     Torse : ',armureToString(Torse,getPersonnage().armures[1]));
+    deplacerCurseurXY(159,17); write('     Gants : ',armureToString(Gants,getPersonnage().armures[2]));
+    deplacerCurseurXY(159,18); write(' Jambières : ',armureToString(Jambieres,getPersonnage().armures[3]));
+    deplacerCurseurXY(159,19); write('    Bottes : ',armureToString(Bottes,getPersonnage().armures[4]));
 
-    deplacerCurseurXY(164,25);Write('   -------------   ');
+    deplacerCurseurXY(169,21);Write('   -------------   ');
     for i:=0 to ord(high(TypeMonstre)) do
     begin
-        deplacerCurseurXY(180-length(partieToString(TypeMonstre(i))),27+i);
+        deplacerCurseurXY(185-length(partieToString(TypeMonstre(i))),23+i);
         write(partieToString(TypeMonstre(i)),' : ',getPersonnage().parties[i]);
     end; 
-    deplacerCurseurXY(164,30);Write('   -------------   '); 
-    deplacerCurseurXY(155,32);Write('      Buff : ',bonusToString(getPersonnage().buff));
+    deplacerCurseurXY(169,26);Write('   -------------   ');
+    deplacerCurseurXY(159,28);Write('      Buff : ',bonusToString(getPersonnage().buff));
+
+    deplacerCurseurXY(169,30);Write('   -------------   ');
+     //////////////////////////////////////////////////////////////////////////////////////
+    deplacerCurseurXY(159,32); write('    Niveau  : ',getPersonnage().lv.niveau);
+    deplacerCurseurXY(159,33); write('Experience  : ',getPersonnage().xp, '/' , getPersonnage().lv.experienceRequise);
+    deplacerCurseurXY(159,34); write('Competence1 : ',getPersonnage().competence.competence1.nomCompetence);
+    deplacerCurseurXY(159,35); write('Competence2 : ',getPersonnage().competence.competence2.nomCompetence);
+    deplacerCurseurXY(159,36); write('Attaque base: ',getPersonnage().attaqueBase);
+    deplacerCurseurXY(159,37); write('Armure base : ',getPersonnage().armureBase);
+
 
   end;
 
@@ -166,33 +169,6 @@ begin
   afficherCadreAction(); 
   //Cadre Lieu
   afficherCadreLieuEcranSimple();
-end;
-
-//Afficher un cadre spécial pour les équipement en obsidienne                   {5.14}
-procedure afficherCadreActionForge();
-begin
-     dessinerCadreXY(1,29,74,39,simple,white,black);
-     dessinerCadreXY(74,35,198,35,simple,white,black);
-     deplacerCurseurXY(74,36);write(' ');
-     deplacerCurseurXY(74,37);write(' ');
-     deplacerCurseurXY(74,38);write(' ');
-     deplacerCurseurXY(74,39);write(#196);
-end;
-
-//Affiche l'interface de la forge                                               {5.15}
-procedure afficherInterfaceForge();
-begin
-  effacerEcran;
-  //Cadre extérieur
-  afficherCadreExterieur();
-  //Cadre action
-  afficherCadreActionForge();
-  //Cadre réponse
-  afficherCadreResponse();
-  //Cadre latéral droit
-  afficherMenuLateralPersonnage();
-  //Cadre Lieu
-  afficherCadreLieuEcranSplit();
 end;
 
 end.
