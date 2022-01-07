@@ -42,7 +42,7 @@ var
 begin
    //On récupère une copie du monstre
    monstre := getMonstre(numMonstre);
-   choix := ''; 
+   choix := '';
 
    //Affichage initial
    afficherInterfacePrincipale();
@@ -76,11 +76,7 @@ begin
                   //Buff de Force
                   if(getPersonnage().buff = Force) then degatPerso+=1;
                   monstre.pv -= degatPerso;
-                  if(monstre.pv < 0) then
-                    begin
-                      monstre.pv := 0;
-                      perso.xp := (perso.xp) + (monstre.exp);
-                    end;
+                  if(monstre.pv < 0) then monstre.pv := 0;
              end
              //Récupération de parties
              else if(choix = '2') then
@@ -90,15 +86,10 @@ begin
                   //Buff de Force
                   if(getPersonnage().buff = Force) then degatPerso+=1;
                   monstre.pv -= degatPerso;
-                  if(monstre.pv < 0) then
-                    begin
-                      monstre.pv := 0;
-                      perso.xp := (perso.xp) + (monstre.exp);
-                    end;
+                  if(monstre.pv < 0) then monstre.pv := 0;
                   //Récupération de partie
                   nbPartie := random(2);
                   if(nbPartie > 0) and (degatPerso > 0) then ajouterPartie(numMonstre);
-
              end
              //Potion
              else if(choix = '3') then
@@ -106,7 +97,7 @@ begin
                   if(getPersonnage().inventaire[1] > 0) then
                   begin
                        soigner();
-                       boirePotion := 1;           //Réussite 
+                       boirePotion := 1;           //Réussite
                        utiliserObjet(1);
                   end
                   else boirePotion := 0;           //Echec
@@ -126,13 +117,15 @@ begin
              //Competence1
               else if(choix = '5') then
              begin
-                 monstre.pv-=Perso.competence.competence1.degatCompetence;
+                 monstre.pv-=perso.competence.competence1.degatCompetence;
+                 if(monstre.pv < 0) then monstre.pv := 0;
              end
 
               //Competence2
               else if(choix = '6') then
              begin
-                 monstre.pv-=Perso.competence.competence2.degatCompetence;
+                 monstre.pv-=perso.competence.competence2.degatCompetence;
+                 if(monstre.pv < 0) then monstre.pv := 0;
              end;
 
              //Contre attaque du monstre
@@ -182,12 +175,12 @@ begin
               if(monstre.pv = 0) then
               begin
                    deplacerCurseurXY(30,17);write('Le monstre s''effondre ! Félicitations, vous l''avez vaincu !');
-                   deplacerCurseurXY(30,19);write('Le monstre s''effondre ! Félicitations, vous avez gagné !',monstre.exp);
+                   deplacerCurseurXY(30,19);write('Le monstre s''effondre ! Félicitations, vous avez gagné ',monstre.exp,' EXP');
               end;
             end;
             //Boire potion
             if(boirePotion>-1) then
-            begin     
+            begin
                 couleurTexte(cyan);
                 if(boirePotion = 0) then
                 begin
@@ -200,7 +193,7 @@ begin
             end;
             //Lancer une bombe
             if(lancerBombe>-1) then
-            begin  
+            begin
                 couleurTexte(cyan);
                 if(lancerBombe = 0) then
                 begin
@@ -219,7 +212,7 @@ begin
                  if(getPersonnage().sante = 0) then
                  begin
                       deplacerCurseurXY(30,20);write('Vous vous effondrez... Le monstre a eu raison de vous...');
-                 end  
+                 end
                  //Buff de regénération
                  else if(getPersonnage().buff = Regeneration) then
                  begin
@@ -234,29 +227,23 @@ begin
             end;
 
             //Utiliser la competence 1
-            if(useCompetence1>-1) then
+            if(useCompetence1 =5) then
             begin
-                 deplacerCurseurXY(30,15);write('Vous lancez la compétence :',perso.competence.competence1.nomCompetence,' sur le monstre!');
-                 deplacerCurseurXY(30,17);write('Vous fait:',perso.competence.competence1.degatCompetence,' sur le monstre!');
+                 couleurTexte(lightred);
+                 deplacerCurseurXY(30,24);write('Vous lancez la compétence :',perso.competence.competence1.nomCompetence,' sur le monstre!');
+                 deplacerCurseurXY(30,26);write('Vous fait:',perso.competence.competence1.degatCompetence,' sur le monstre!');
                  monstre.pv := (monstre.pv) - (perso.competence.competence1.degatCompetence);
-                 if (monstre.pv < 0) then
-                   begin
-                     monstre.pv := 0;
-                     perso.xp := perso.xp + monstre.exp;
-                   end;
+                 if (monstre.pv < 0) then  monstre.pv := 0;
             end;
 
             //Utiliser la competence 2
-            if(useCompetence2>-1) then
+            if(useCompetence2=6) then
             begin
-                 deplacerCurseurXY(30,15);write('Vous lancez la compétence :',perso.competence.competence2.nomCompetence,' sur le monstre!');
-                 deplacerCurseurXY(30,17);write('Vous fait:',perso.competence.competence2.degatCompetence,' sur le monstre!');
+                 couleurTexte(lightred);
+                 deplacerCurseurXY(30,24);write('Vous lancez la compétence :',perso.competence.competence2.nomCompetence,' sur le monstre!');
+                 deplacerCurseurXY(30,26);write('Vous fait:',perso.competence.competence2.degatCompetence,' sur le monstre!');
                  monstre.pv := (monstre.pv) - (perso.competence.competence2.degatCompetence);
-                 if (monstre.pv < 0) then
-                   begin
-                     monstre.pv := 0;
-                     perso.xp := perso.xp + monstre.exp;
-                   end;
+                 if (monstre.pv < 0) then monstre.pv := 0;
             end;
             couleurTexte(White);
         end;
@@ -281,9 +268,11 @@ begin
          recupererPrime(monstre.prime);
          setBuff(AucunB);
          combat := expedition;
+         getExperience(monstre.exp);
+
    end
    //Mort
-   else 
+   else
    begin
         combat := menuPrincipal;
    end;
