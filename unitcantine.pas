@@ -42,8 +42,9 @@ end;
 //Fonction exécutée pour afficher l'écran d'affichage des recettes
 //Renvoie le prochain lieu à visiter
 function choixRecette() : typeLieu;
-var choix : string;
-  choixNumber : integer;
+var
+  choix : string;
+  choixNumber, i, bonusX : integer;
   recette: TypeRecette;
 begin
   choix := '';
@@ -54,14 +55,16 @@ begin
                                                         
     deplacerCurseurXY(63,5); write('Le cuisinier vous propose :');
     couleurTexte(Cyan);
-    deplacerCurseurXY(25,7); write('Plat');
-    deplacerCurseurXY(85,7); write('Bonus');
+    deplacerCurseurXY(25,7); write('Plat :');
+    bonusX := 27 + longueurMaxNomRecette;
+    deplacerCurseurXY(bonusX,7); write('Bonus :');
     couleurTexte(White);
 
-    recette := lireRecette(0);
-
-    deplacerCurseurXY(25,9); write('1/ ', recette.nom);
-    deplacerCurseurXY(85,9); write(bonusToString(recette.effet));
+    for i := 0 to TAILLE_PAGE_RECETTES-1 do begin
+        recette := lireRecette(i);
+        deplacerCurseurXY(25, 9+i); write(i+1:2, '/ ', recette.nom);
+        deplacerCurseurXY(bonusX, 9+i); write(bonusToString(recette.effet));
+    end;
 
     deplacerCurseurZoneAction(1);write('Que souhaitez-vous faire ?');
     deplacerCurseurZoneAction(3);write('     ?/ Commander un plat (entrer son numéro)');

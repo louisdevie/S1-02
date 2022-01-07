@@ -11,6 +11,8 @@ interface
 
     const TAILLE_PAGE_RECETTES = 13;
 
+    function longueurMaxNomRecette: Integer;
+
 
     procedure initRecettes;
 
@@ -61,11 +63,12 @@ implementation
         _premiereRecetteBonus,
         _curseurPage,
         _curseurRecette: _PtrCelluleRecette;
-        _pageCourante: Integer;
         _modeTriUtilise: _ModeTri;
-        _dernierePage : Integer;   
-        _tailleDernierePage : Integer;
-        _nombreDeRecettes : Integer;
+        _pageCourante,
+        _dernierePage ,
+        _tailleDernierePage,
+        _nombreDeRecettes,
+        _longueurMax : Integer;
 
     procedure initRecettes;
     begin
@@ -76,6 +79,7 @@ implementation
         _nombreDeRecettes := 0;
         _dernierePage := 0;
         _tailleDernierePage := 0;
+        _longueurMax := 0;
     end;
 
 
@@ -137,6 +141,8 @@ implementation
         curseurAlpha, curseurBonus, nouvelleRecette: _PtrCelluleRecette;
     begin
         _nombreDeRecettes += 1;
+
+        if length(recette.nom) > _longueurMax then _longueurMax := length(recette.nom);
 
         if _premiereRecetteAlpha = NIL then begin
             new(_premiereRecetteAlpha);
@@ -312,6 +318,12 @@ implementation
              end;
         end;
         lireRecette := _curseurRecette^.valeur;
+    end;
+
+
+    function longueurMaxNomRecette: Integer;
+    begin
+        longueurMaxNomRecette := _longueurMax;
     end;
 
 end.
