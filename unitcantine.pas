@@ -35,8 +35,7 @@ uses
 //Mange le plat et applique le bonus
 procedure manger(nbPlat : integer);
 begin
-     //Fixe le buff
-     setBuff(bonus(nbPlat));
+    setBuff(lireRecette(nbPlat).effet);
 end;
        
 //Fonction exécutée pour afficher l'écran d'affichage des recettes
@@ -55,32 +54,38 @@ begin
                                                         
     deplacerCurseurXY(63,5); write('Le cuisinier vous propose :');
     couleurTexte(Cyan);
-    deplacerCurseurXY(25,7); write('Plat :');
+    deplacerCurseurXY(29,7); write('Plat');
     bonusX := 27 + longueurMaxNomRecette;
-    deplacerCurseurXY(bonusX,7); write('Bonus :');
+    deplacerCurseurXY(bonusX,7); write('Bonus');
     couleurTexte(White);
 
-    for i := 0 to TAILLE_PAGE_RECETTES-1 do begin
+    for i := 0 to taillePageRecettes-1 do begin
         recette := lireRecette(i);
         deplacerCurseurXY(25, 9+i); write(i+1:2, '/ ', recette.nom);
         deplacerCurseurXY(bonusX, 9+i); write(bonusToString(recette.effet));
     end;
 
-    deplacerCurseurZoneAction(1);write('Que souhaitez-vous faire ?');
-    deplacerCurseurZoneAction(3);write('     ?/ Commander un plat (entrer son numéro)');
+    deplacerCurseurXY(63, 28); write('Page ', pageCouranteRecettes, ' sur ', nombrePagesRecettes);
 
-    deplacerCurseurZoneAction(6);write('     0/ Revenir en arrière');
+    deplacerCurseurZoneAction(1); write('Que souhaitez-vous faire ?');
+    deplacerCurseurZoneAction(3); write('     ?/ Commander un plat (entrer son numéro)');
+
+    deplacerCurseurZoneAction(5); write('     0/ Revenir en arrière');   
+    deplacerCurseurZoneAction(6); write('     S/ Page suivante');
+    deplacerCurseurZoneAction(7); write('     P/ Page précédante');
 
     deplacerCurseurZoneResponse();
     readln(choix);
 
     //Si l'utilisateur saisit 0 => revenir au premier menu
     if(choix = '0') then choixRecette := cantine
+    else if (choix = 'S') or (choix = 's') then pageSuivanteRecettes 
+    else if (choix = 'P') or (choix = 'p') then pagePrecedenteRecettes
     //Si l'utilisateur saisit un nombre, convertir choix (string) en choixNumber (integer)
     else if(TryStrToInt(choix,choixNumber)) then
     begin
          //Si la recette existe, la manger
-         if(choixNumber > 0) and (choixNumber < 5) then manger(choixNumber);
+         if(choixNumber > 0) and (choixNumber < taillePageRecettes) then manger(choixNumber-1);
     end;
   end;
 end;

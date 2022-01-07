@@ -9,9 +9,12 @@ interface
             effet: Bonus;
         end;
 
+
     const TAILLE_PAGE_RECETTES = 13;
 
     function longueurMaxNomRecette: Integer;
+
+    function nombrePagesRecettes: Integer;
 
 
     procedure initRecettes;
@@ -65,7 +68,7 @@ implementation
         _curseurRecette: _PtrCelluleRecette;
         _modeTriUtilise: _ModeTri;
         _pageCourante,
-        _dernierePage ,
+        _dernierePage,
         _tailleDernierePage,
         _nombreDeRecettes,
         _longueurMax : Integer;
@@ -254,20 +257,20 @@ implementation
     begin
         case _modeTriUtilise of
              ALPHABETIQUE: begin
+                 if _pageCourante = _dernierePage then
+                     _pageCourante := 1
+                 else
+                     _pageCourante += 1;                                
                  for i := 1 to taillePageRecettes do
                      _curseurPage := _curseurPage^.suivantOrdreAlpha;
-                 if _pageCourante = _dernierePage then
-                     _pageCourante := 1
-                 else
-                     _pageCourante += 1;
              end;
              PARBONUS: begin
-                 for i := 1 to taillePageRecettes do
-                     _curseurPage := _curseurPage^.suivantOrdreBonus;
                  if _pageCourante = _dernierePage then
                      _pageCourante := 1
                  else
-                     _pageCourante += 1;
+                     _pageCourante += 1; 
+                 for i := 1 to taillePageRecettes do
+                     _curseurPage := _curseurPage^.suivantOrdreBonus;
              end;
         end;
     end;
@@ -278,20 +281,20 @@ implementation
     begin
         case _modeTriUtilise of
              ALPHABETIQUE: begin
+                 if _pageCourante = 1 then
+                     _pageCourante := _dernierePage
+                 else
+                     _pageCourante -= 1;
                  for i := 0 to taillePageRecettes do
                      _curseurPage := _curseurPage^.precedantOrdreAlpha;
-                 if _pageCourante = 1 then
-                     _pageCourante := _dernierePage
-                 else
-                     _pageCourante -= 1;
              end;
              PARBONUS: begin
-                 for i := 0 to taillePageRecettes do
-                     _curseurPage := _curseurPage^.precedantOrdreBonus;
                  if _pageCourante = 1 then
                      _pageCourante := _dernierePage
                  else
                      _pageCourante -= 1;
+                 for i := 0 to taillePageRecettes do
+                     _curseurPage := _curseurPage^.precedantOrdreBonus;
              end;
         end;
     end;
@@ -324,6 +327,12 @@ implementation
     function longueurMaxNomRecette: Integer;
     begin
         longueurMaxNomRecette := _longueurMax;
+    end;
+
+
+    function nombrePagesRecettes: Integer;
+    begin
+        nombrePagesRecettes := _dernierePage;
     end;
 
 end.
