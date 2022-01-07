@@ -11,6 +11,21 @@ type
   bonus = (AucunB,Force,Regeneration);       //Bonus de la cantinue
   genre = (Masculin,Feminin,Autre);         //Genre du personnage
 
+  level = record                       //un enregistrement d'un level qui contient
+    niveau : integer;                  //le niveau du personnage et
+    experienceRequise : integer;       //l'experience requise
+  end;
+
+  typeCompetence = record
+    nomCompetence : string;             //Nom de la competence
+    degatCompetence : integer;          //Dégat de la competence
+  end;
+
+  TCompetence = record
+    competence1 : typeCompetence;       //La competence 1
+    competence2 : typeCompetence;       //La competence 2
+  end;
+
   //Type représentant le personnage
   Personnage = record
     nom : String;                           //Nom du personnage
@@ -21,15 +36,24 @@ type
     arme : materiaux;                       //Arme utilisée
     armures : TArmures;                     //Armures
     sante : integer;                        //Vie du personnage
+    santeMax : integer;                     //VieMax du personnage
     argent : integer;                       //Argent du personnage
     buff : bonus;                           //Buff du joueur
-    santeMax : integer                      //Santé maximale                    {2.2}
+
+    xp : integer;//l'experience du personnage
+    lv : level;//le niveau du personnage
+    attaqueBase : integer;//attaque base du personnage
+    armureBase  : integer;//armure base de personnage
+    competence  : TCompetence; //la competence du personnage
+
+
   end;
 
   //Type représentant un coffre d'équipement
   TCoffre = record
     armures : TCoffreArmures;               //Armures présentes dans le coffre
     armes : TCoffreArmes;                   //Armes présentes dans le coffre
+   // competence : TCoffreCompetence //Competence presente dans coffre
   end;
 
    
@@ -88,6 +112,29 @@ function bonusToString(buff : bonus) : String;
 procedure setBuff(buff : bonus);
 
 
+//Ajouter l'experience apres tuer le monstre
+procedure getExperience(qte : integer);
+//Niveau Suivant
+procedure niveauSuivant();
+//Compétence 1 du personnage
+procedure competence1();
+//Compétence 2 du personnage
+procedure competence2();
+//Renvoie le montant de dégats d'une attaque de competence 1
+function degatCompetence1() : integer;
+//Renvoie le montant de dégats d'une attaque de competence 2
+function degatCompetence2() : integer;
+//initialisation des compétences
+procedure initialisationCompetence();
+{
+//Renvoie si le joueur possède un niveau requis (et l'or) pour apprendre la competence
+function peuxApprendre(mat : competence) : boolean;
+//apprendre la competence1
+procedure apprendreCompetence1(mat : competence);
+//apprendre la competence2
+procedure apprendreCompetence2(mat : competence);
+ }
+
 
 
 
@@ -133,23 +180,54 @@ begin
   //Inventaire vide
   for i:=1 to nbObjets do perso.inventaire[i] := 0;
   //Inventaire de partie vide
-  for i := 0 to ord(high(TypeMonstre)) do perso.parties[i] := 50;
-  //En pleine forme
+  for i := 0 to ord(high(TypeMonstre)) do perso.parties[i] := 0;
+  //En Max forme
   perso.santeMax:=150;
-  perso.sante:=perso.santeMax;                                                  {2.2}
+  //En pleine forme
+  perso.sante:=perso.santeMax;
   //Pas d'arme
   perso.arme := aucun;
   //Pas d'armure
-  for i := 0 to 4 do perso.armures[i] := aucun;
+  for i := 0 to 4 do perso.armures[i] := aucun; 
   //Ajouter 200 PO
   perso.argent:=200;
 
+  //Attaque de base du personnage
+  perso.attaqueBase:=1 ;
+  //Armure de base du personnage
+  perso.armureBase:=1;
+  //Experience au debut
+  perso.xp:=0;
+  perso.lv.experienceRequise:=100;
+end;
+
+//initialisation des compétences
+procedure initialisationCompetence();
+begin
+  perso.competence.competence1.nomCompetence:='Boule de neige';
+  perso.competence.competence1.degatCompetence:=100;
+  perso.competence.competence2.nomCompetence:='Boule de feu';
+  perso.competence.competence2.degatCompetence:=200;
 end;
 
 //Renvoie le personnage (lecture seul)
 function getPersonnage() : Personnage;
 begin
   getPersonnage := perso;
+  if perso.nom='Alice' then
+  begin
+    perso.argent:=5000;
+    coffre.armes[ord(Obsidienne)]:=true;
+    changerArmure(ord(Torse),ord(Obsidienne));    //on peut changer de cette maniere
+    // perso.armures[ord(Torse)]:= Obsidienne;    //ou cette maniere
+    perso.lv.niveau:=9;
+    perso.xp:=1001;
+    perso.lv.experienceRequise:=1000;
+    perso.competence.competence1.nomCompetence:='haha';
+    perso.competence.competence2.nomCompetence:='hoho';
+    perso.attaqueBase:=100;
+    perso.armureBase :=100;
+  end;
 end;
 
 //Renvoie le coffre (lecture seul)
@@ -170,19 +248,8 @@ end;
 
 //Change le nom du joueur
 procedure setNomPersonnage(nom : string);
-var
-   i : integer;
-
 begin
   perso.nom:=nom;
-  //Cheat code
-  if perso.nom='Alice' then
-     begin
-       perso.argent:=5000;                                                      {2.1}
-       perso.armures[ord(Torse)]:=Obsidienne;                                   {4.10}
-       //perso.arme := Obsidienne;
-       coffre.armes[ord(Obsidienne)]:=true;                                     {4.10}
-     end;
 end;
 
 //Change le genre du joueur
@@ -207,7 +274,7 @@ end;
 //Dormir dans son lit
 procedure dormir();
 begin
-  perso.sante:=150;                                                             {2.3}
+  perso.sante:=perso.santeMax;
 end;
 
 //Change l'arme du joueur
@@ -257,7 +324,7 @@ end;
 function degatsRecu() : integer;
 begin
   degatsRecu := (2+Random(10))-encaissement(perso.armures);
-  if (degatsRecu < 0) then degatsRecu := 0;
+  if degatsRecu < 0 then degatsRecu := 0;
   perso.sante -= degatsRecu;
   if perso.sante < 0 then perso.sante := 0;
 end;
@@ -272,14 +339,14 @@ end;
 procedure soigner();
 begin
   perso.sante += 50;
-  if(perso.sante > 150) then perso.sante := 150;                                {2.3}
+  if(perso.sante > perso.santeMax) then perso.sante := perso.santeMax;
 end;
 
 //Soigne le personnage de 1pv
 procedure regen();
 begin
   perso.sante += 1;
-  if(perso.sante > 150) then perso.sante := 150;                                {2.3}
+  if(perso.sante > perso.santeMax) then perso.sante := perso.santeMax;
 end;
 
 //Supprime 1 objet
@@ -299,11 +366,11 @@ function peuxForger(mat : materiaux) : boolean;
 begin
      //Test de l'argent
      peuxForger := (perso.argent >= 500);
-     //Test des matériaux
+     //Test des matériaux et le niveau
      case mat of
-          os : peuxForger := peuxForger AND (perso.parties[0]>4);
-          Ecaille : peuxForger := peuxForger AND (perso.parties[1]>4);
-          Obsidienne : peuxForger := peuxForger AND (perso.parties[1]>49)       {4.13}
+          os : peuxForger := peuxForger AND (perso.parties[0]>4) AND (perso.lv.niveau>=1);
+          Ecaille : peuxForger := peuxForger AND (perso.parties[1]>4) AND (perso.lv.niveau>=5);
+          Obsidienne : peuxForger:= peuxForger AND (perso.parties[0]>4) AND (perso.lv.niveau>=8);
      end;
 end;
 
@@ -317,9 +384,8 @@ begin
      case mat of
           os : perso.parties[0] -= 5;
           Ecaille : perso.parties[1] -= 5;
-          Obsidienne : perso.parties[1] -= 50;                                  {4.13}
+          Obsidienne: perso.parties[1] -= 50;
      end;
-
      //Ajoute l'arme dans le coffre
      coffre.armes[ord(mat)] := true;
 end;
@@ -334,7 +400,8 @@ begin
      case mat of
           os : perso.parties[0] -= 5;
           Ecaille : perso.parties[1] -= 5;
-          Obsidienne : perso.parties[1] -= 50;                                  {4.13}
+          Obsidienne: perso.parties[1] -= 50;
+
      end;
 
      //Ajoute l'armure dans le coffre
@@ -356,6 +423,107 @@ procedure setBuff(buff : bonus);
 begin
   perso.buff := buff;
 end;
+
+//Ajouter l'experience apres tuer le monstre
+procedure getExperience(qte : integer);
+begin
+  perso.xp += qte;
+end;
+
+//Niveau Suivant
+procedure niveauSuivant();
+begin
+  if (perso.xp)>=(perso.lv.experienceRequise) then
+    begin
+      perso.lv.niveau+=1;
+      perso.xp-=perso.lv.experienceRequise;
+      perso.lv.experienceRequise+=100;
+      if perso.xp <=0 then perso.xp:=0;
+      perso.santeMax+=50;
+      perso.attaqueBase+=5;
+      perso.armureBase+=3;
+      perso.sante:=perso.santeMax;
+    end;
+
+end;
+
+//Compétence 1 du personnage
+procedure competence1();
+begin
+  //verifier si il a assez d'argent pour apprendre cette competence
+  if (getPersonnage().argent>=100) then
+  begin
+    perso.competence.competence1.nomCompetence:='boule de neige';
+    perso.argent:=perso.argent-100;
+  end;
+  //entrainementHUB();
+end;
+
+//Compétence 2 du personnage
+procedure competence2();
+begin
+  //verifier si il a assez d'argent pour apprendre cette competence
+  if (getPersonnage().argent>=500) then
+  begin
+    perso.competence.competence2.nomCompetence:='boule de feu';
+    perso.argent:=perso.argent-500;
+  end;
+  //entrainementHUB();
+end;
+
+    {
+//Renvoie si le joueur possède un niveau requis (et l'or) pour apprendre la competence
+function peuxApprendre(mat : competence) : boolean;
+begin
+     //Test de l'argent
+     peuxApprendre := (perso.argent >= 50);
+     //Test niveau
+     case mat of
+          competence1 : peuxApprendre := peuxApprendre AND (perso.lv>2);
+          competence2 : peuxApprendre := peuxApprendre AND (perso.lv>10);
+     end;
+end;
+
+//apprendre la competence1
+procedure apprendreCompetence1(mat : competence);
+begin
+     //retire l'or
+     perso.argent -= 50;
+     //Ajoute la competance1 dans le coffre
+     coffre.competence[ord(mat)] := true;
+end;
+
+//apprendre la competence2
+procedure apprendreCompetence2(mat : competence);
+begin
+     //retire l'or
+     perso.argent -= 500;
+     //Ajoute la competence2 dans le coffre
+     coffre.competence[ord(mat)] := true;
+end;
+end;
+
+
+
+
+
+
+   }
+
+//Renvoie le montant de dégats d'une attaque de competence 1
+function degatCompetence1() : integer;
+begin
+ degatCompetence1 := ((perso.attaqueBase)+(perso.competence.competence1.degatCompetence));
+end;
+
+
+
+//Renvoie le montant de dégats d'une attaque de competence 2
+function degatCompetence2() : integer;
+begin
+ degatCompetence2 := ((perso.attaqueBase)+(perso.competence.competence2.degatCompetence));
+end;
+
 
 end.
 
