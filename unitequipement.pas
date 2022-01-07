@@ -6,7 +6,7 @@ unit unitEquipement;
 interface        
 //----- TYPES -----
 type
-  materiaux = (aucun,fer,Os,Ecaille,Obsidienne);                        //Matériaux pour les armes et armures            {4.7}
+  materiaux = (aucun,fer,Os,Ecaille,Obsidienne);                        //Matériaux pour les armes et armures
   emplacementArmure = (Casque,Torse,Gants,Jambieres,Bottes);            //liste des emplacements d'armures
   TArmures = array[0..4] of materiaux;                                  //Armure (5 slots)
   TCoffreArmures = array[0..4,1..ord(high(materiaux))] of boolean;      //Coffres - armures (pour chaque couple matériaux, slots, un booléen représentant si le joueur possède cet objet dans son coffre)
@@ -51,7 +51,7 @@ begin
         fer : armureToString += ' en fer';
         Os : armureToString += ' en os';
         Ecaille : armureToString += ' en évaille';
-        Obsidienne : armureToString += ' en obsidienne';                        {4.8}
+        Obsidienne : armureToString += 'en obsidienne';
     end;
   end;
 end;
@@ -64,7 +64,7 @@ begin
        fer : armeToString := 'Grande épée en fer';
        Os : armeToString := 'Grande épée en os'; 
        Ecaille : armeToString := 'Grande épée en écailles';
-       Obsidienne : armeToString := 'Grande épée en obsidienne';                {4.8}
+       Obsidienne : armeToString := 'Grande épée en obsidienne';
    end;
 end;
 
@@ -76,7 +76,7 @@ begin
        fer : multiplicateurDegatsArme := 1;
        Os : multiplicateurDegatsArme := 2;
        Ecaille : multiplicateurDegatsArme := 3;
-       Obsidienne : multiplicateurDegatsArme := 6;                              {4.9}
+       Obsidienne : multiplicateurDegatsArme :=6;
    end;
 end;
 
@@ -96,10 +96,10 @@ end;
 function recetteToString(mat : materiaux) : string;
 begin
   case mat of
-      fer : recetteToString:='(500 po)';
-      os : recetteToString:='(500 po, 5 morceaux de Grand Jagras)';
-      Ecaille : recetteToString:='(500 po, 5 morceaux de Pukei-Pukei)';
-      Obsidienne : recetteToString:='(500 po et 50 morceaux de Pukei-Pukei)';   {4.12}
+      fer : recetteToString:='(500po,lv1 requis)';
+      os : recetteToString:='(500po,5 morceaux de Grand Jagras,lv3 requis)';
+      Ecaille : recetteToString:='(500po,5 morceaux de Pukei-Pukei,lv5 requis)';
+      Obsidienne : recetteToString:='(500po,50 morceaux de Pukei-Pukei,lv10 requis)';
   end;
 end;
 
