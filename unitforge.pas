@@ -34,8 +34,7 @@ begin
      choix := -1;
      while(choix <> 0) do
      begin
-        //afficherInterfacePrincipale();
-        afficherInterfaceForge();
+        afficherInterfacePrincipale();
         afficherLieu('Forge de la ville de Brightwood');
         deplacerCurseurXY(63,5);write('Les forgerons vous proposent :');
 
