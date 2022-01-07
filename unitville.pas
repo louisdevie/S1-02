@@ -33,7 +33,7 @@ function villeHub() : typeLieu;
 var choix : string;
 begin
   choix := '';
-  while (choix <> '1') and (choix <> '2') and (choix <> '3') and (choix <> '4') and (choix <> '5') do
+  while (choix <> '1') and (choix <> '2') and (choix <> '3') and (choix <> '4') and (choix <> '5') and (choix <> '6') do
   begin
     afficherInterfacePrincipale();
     afficherLieu('Ville de Brightwood');
@@ -62,6 +62,7 @@ begin
     deplacerCurseurZoneAction(5);write('     3/ Se rendre à la forge'); 
     deplacerCurseurZoneAction(6);write('     4/ Se rendre à la cantine');
     deplacerCurseurZoneAction(7);write('     5/ Se rendre à la porte');
+    deplacerCurseurZoneAction(8);write('     6/ Se rendre au camp d''entrainement');
 
     deplacerCurseurZoneResponse();
     readln(choix);
@@ -73,6 +74,7 @@ begin
        '3' : villeHub := forge;  
        '4' : villeHub := cantine;
        '5' : villeHub := expedition;
+      // '6' : villeHub := entrainement;
   end;
 
 end;
