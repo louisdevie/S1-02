@@ -220,9 +220,7 @@ begin
     coffre.armes[ord(Obsidienne)]:=true;
     changerArmure(ord(Torse),ord(Obsidienne));    //on peut changer de cette maniere
     // perso.armures[ord(Torse)]:= Obsidienne;    //ou cette maniere
-    perso.lv.niveau:=9;
-    perso.xp:=1001;
-    perso.lv.experienceRequise:=1000;
+    perso.lv.niveau:=1;
     perso.competence.competence1.nomCompetence:='haha';
     perso.competence.competence2.nomCompetence:='hoho';
     perso.attaqueBase:=100;
@@ -317,13 +315,13 @@ end;
 //Renvoie le montant de dégats d'une attaque
 function degatsAttaque() : integer;
 begin
-  degatsAttaque := (4+Random(5))*multiplicateurDegatsArme(perso.arme);
+  degatsAttaque := ((4+Random(5))*multiplicateurDegatsArme(perso.arme)+perso.attaqueBase);
 end;
 
 //Renvoie le montant de dégats recu
 function degatsRecu() : integer;
 begin
-  degatsRecu := (2+Random(10))-encaissement(perso.armures);
+  degatsRecu := (2+Random(10))-(encaissement(perso.armures)-perso.armureBase);
   if degatsRecu < 0 then degatsRecu := 0;
   perso.sante -= degatsRecu;
   if perso.sante < 0 then perso.sante := 0;
