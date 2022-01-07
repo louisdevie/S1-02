@@ -72,10 +72,10 @@ end;
 function multiplicateurDegatsArme(mat : materiaux) : integer;
 begin
    case mat of
-       aucun : multiplicateurDegatsArme := 0;
-       fer : multiplicateurDegatsArme := 1;
-       Os : multiplicateurDegatsArme := 2;
-       Ecaille : multiplicateurDegatsArme := 3;
+       aucun : multiplicateurDegatsArme := 1;
+       fer : multiplicateurDegatsArme := 2;
+       Os : multiplicateurDegatsArme := 3;
+       Ecaille : multiplicateurDegatsArme := 4;
        Obsidienne : multiplicateurDegatsArme :=6;
    end;
 end;
