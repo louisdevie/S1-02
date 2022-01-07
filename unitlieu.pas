@@ -59,6 +59,7 @@ begin
           expedition : seRendre:=chasseHub();                         //Porte de la ville
           forge : seRendre:=ForgeHUB();                               //Forge
           cantine : seRendre:=cantineHUB();                           //Cantine
+          ///entrainement : seRendre:=entrainementHUB();                 //Camp d'entrainement
      end;
 end;
 
