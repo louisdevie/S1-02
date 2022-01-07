@@ -12,6 +12,8 @@ type
     pv : integer;                               //points de vie
     stun : integer;                             //Nombre de tour stun
     prime : integer;
+    exp : integer; //experience recoit lors qu'on tue le monstre
+
   end;
 
   TCatalogueMonstre = array[0..ord(high(TypeMonstre))] of TMonstre;
@@ -45,10 +47,12 @@ begin
   monstres[0].pv:=100;
   monstres[0].stun:=0;
   monstres[0].prime := 200;
+  monstres[0].exp:=50;
   monstres[1].typeM:=Pukei;
   monstres[1].pv:=200;
   monstres[1].stun:=0;     
   monstres[1].prime := 500;
+  monstres[1].exp:=100;
 end;
 
 //Renvoie le nom du monstre
